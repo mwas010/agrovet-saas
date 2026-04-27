@@ -1,0 +1,116 @@
+{% extends 'base.html' %} {% block title %}Price Management - Luanda Feeds
+Centre{% endblock %} {% block content %}
+<div class="card" style="max-width: 100%" ;>
+  <h2 class="card-title">Price Management</h2>
+  <p style="margin-bottom: 20px; color: #666">
+    Update buying or selling prices for items. Changes are logged for audit.
+  </p>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group" style="position: relative">
+      <label for="itemSearch">Search Item *</label>
+      <input
+        type="text"
+        id="itemSearch"
+        class="form-control"
+        placeholder="Type item name to search..."
+        autocomplete="off"
+        required
+      />
+      <input type="hidden" id="itemId" name="item_id" />
+      <div id="autocompleteResults" class="autocomplete-results"></div>
+      <div id="selectedItemInfo" style="margin-top: 10px; display: none">
+        <strong>Selected:</strong> <span id="selectedItemName"></span>
+        <span style="color: #666">
+          | Current Selling: <span id="currentPrice"></span
+        ></span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="price_type">Price Type *</label>
+      <select id="price_type" name="price_type" class="form-control" required>
+        <option value="">Select price type</option>
+        <option value="buying">Buying Price</option>
+        <option value="selling">Selling Price</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="new_price">New Price (KES) *</label>
+      <input
+        type="number"
+        id="new_price"
+        name="new_price"
+        class="form-control"
+        step="0.01"
+        min="0"
+        required
+      />
+    </div>
+
+    <div class="action-buttons">
+      <button type="submit" class="btn">Update Price</button>
+      <a href="{% url 'inventory:manager_dashboard' %}" class="btn btn-outline"
+        >Cancel</a
+      >
+    </div>
+  </form>
+
+  <div style="margin-top: 30px">
+    <a href="{% url 'inventory:price_history' %}" class="btn btn-outline"
+      >View Full Price History</a
+    >
+  </div>
+</div>
+
+<script>
+  const searchInput = document.getElementById("itemSearch");
+  const resultsContainer = document.getElementById("autocompleteResults");
+
+  searchInput.addEventListener("input", function () {
+    const query = this.value.trim();
+    if (query.length < 2) {
+      resultsContainer.classList.remove("active");
+      return;
+    }
+
+    fetch(`/inventory/autocomplete/?q=${encodeURIComponent(query)}`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.results && data.results.length > 0) {
+          resultsContainer.innerHTML = data.results
+            .map(
+              (item) => `
+                        <div class="autocomplete-item" onclick="selectItem(${item.id}, '${item.name.replace(/'/g, "\\'")}', ${item.price})">
+                            <div class="name">${item.name}</div>
+                            <div class="details">KES ${item.price.toFixed(2)}</div>
+                        </div>
+                    `,
+            )
+            .join("");
+          resultsContainer.classList.add("active");
+        } else {
+          resultsContainer.classList.remove("active");
+        }
+      });
+  });
+
+  function selectItem(id, name, price) {
+    document.getElementById("itemId").value = id;
+    document.getElementById("selectedItemName").textContent = name;
+    document.getElementById("currentPrice").textContent =
+      "KES " + price.toFixed(2);
+    document.getElementById("selectedItemInfo").style.display = "block";
+    searchInput.value = name;
+    resultsContainer.classList.remove("active");
+  }
+
+  document.addEventListener("click", function (e) {
+    if (!e.target.closest(".form-group")) {
+      resultsContainer.classList.remove("active");
+    }
+  });
+</script>
+{% endblock %}

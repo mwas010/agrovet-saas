@@ -1,0 +1,507 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  {% extends 'base.html' %} {% block title %}Point of Sale - Luanda Feeds
+  Centre{% endblock %} {% block extra_css %}
+  <style>
+    .pos-container {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 20px;
+      height: calc(100vh - 120px);
+    }
+
+    .pos-left {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pos-right {
+      background: #fff;
+      border-radius: 24px;
+      width: 120%;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-container {
+      margin-bottom: 20px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 15px 20px;
+      border: 2px solid #ddd;
+      border-radius: 24px;
+      font-size: 1.1rem;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent-cyan);
+    }
+
+    .autocomplete-results {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      max-height: 300px;
+      overflow-y: auto;
+      z-index: 100;
+      display: none;
+    }
+
+    .autocomplete-results.active {
+      display: block;
+    }
+
+    .autocomplete-item {
+      padding: 12px 20px;
+      cursor: pointer;
+      border-bottom: 1px solid #eee;
+    }
+
+    .autocomplete-item:hover {
+      background-color: var(--bg-cream);
+    }
+
+    .autocomplete-item .name {
+      font-weight: 600;
+    }
+
+    .autocomplete-item .details {
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 20px;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .cart-item-info {
+      flex: 1;
+    }
+
+    .cart-item-name {
+      font-weight: 600;
+    }
+
+    .cart-item-price {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .cart-item-qty {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .qty-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: none;
+      background: var(--accent-cyan);
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    .cart-item-remove {
+      background: none;
+      border: none;
+      color: #ff4444;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    .cart-summary {
+      border-top: 2px solid var(--accent-cyan);
+      padding-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .payment-section {
+      margin-bottom: 20px;
+    }
+
+    .payment-input {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #ddd;
+      border-radius: 12px;
+      font-size: 1.2rem;
+      text-align: right;
+    }
+
+    .change-display {
+      text-align: right;
+      font-size: 1.2rem;
+      padding: 10px;
+      background: #f5f5f5;
+      border-radius: 12px;
+      margin-top: 10px;
+    }
+
+    .change-display.negative {
+      color: #ff4444;
+    }
+
+    .change-display.positive {
+      color: #28a745;
+    }
+
+    .checkout-buttons {
+      display: flex;
+      height: 44px;
+      gap: 10px;
+    }
+
+    .checkout-buttons .btn {
+      flex: 1;
+    }
+
+    .empty-cart {
+      text-align: center;
+      padding: 40px;
+      color: #999;
+    }
+
+    @media (max-width: 900px) {
+      .pos-container {
+        grid-template-columns: 1fr;
+      }
+
+      .pos-right {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-radius: 24px 24px 0 0;
+        max-height: 50vh;
+      }
+    }
+  </style>
+  {% endblock %} {% block content %}
+  <div class="pos-container">
+    <div class="pos-left">
+      <div class="card" style="flex: 1; display: flex; flex-direction: column">
+        <h2 class="card-title">Point of Sale</h2>
+        <div class="search-container" style="position: relative">
+          <input
+            type="text"
+            id="itemSearch"
+            class="search-input"
+            placeholder="Search items by name (type at least 2 characters)..."
+            autocomplete="off"
+          />
+          <div id="autocompleteResults" class="autocomplete-results"></div>
+        </div>
+        <div style="flex: 1; overflow-y: auto" id="productList">
+          <p style="text-align: center; color: #999; padding: 40px">
+            Type to search for items
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="pos-right">
+      <h2 class="card-title">Shopping Cart</h2>
+      <div class="cart-items" id="cartItems">
+        <div class="empty-cart">
+          <p>Cart is empty</p>
+          <p>Add items from the search above</p>
+        </div>
+      </div>
+      <div class="cart-summary">
+        <div class="cart-total">
+          <span>Total:</span>
+          <span id="cartTotal">{{ CURRENCY_SYMBOL }} 0.00</span>
+        </div>
+      </div>
+      <div class="payment-section">
+        <label>Amount Received (KES)</label>
+        <input
+          type="number"
+          id="amountPaid"
+          class="payment-input"
+          placeholder="0.00"
+          step="0.01"
+          min="0"
+        />
+        <div
+          id="changeDisplay"
+          class="change-display"
+          style="display: none"
+        ></div>
+      </div>
+      <div class="checkout-buttons">
+        <button type="button" class="btn btn-outline" onclick="clearCart()">
+          Clear Cart
+        </button>
+        <button
+          type="button"
+          id="checkoutBtn"
+          class="btn"
+          onclick="processCheckout()"
+          disabled
+        >
+          Checkout
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let cart = [];
+    let selectedItemIndex = -1;
+
+    const searchInput = document.getElementById("itemSearch");
+    const resultsContainer = document.getElementById("autocompleteResults");
+
+    searchInput.addEventListener("input", function () {
+      const query = this.value.trim();
+      if (query.length < 2) {
+        resultsContainer.classList.remove("active");
+        return;
+      }
+
+      fetch(`/sales/search-items/?q=${encodeURIComponent(query)}`)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.results && data.results.length > 0) {
+            resultsContainer.innerHTML = data.results
+              .map(
+                (item, index) => `
+                        <div class="autocomplete-item" onclick="selectItem(${index}, ${item.id})">
+                            <div class="name">${item.name}</div>
+                            <div class="details">KES ${item.price.toFixed(2)} | Stock: ${item.stock.toFixed(2)}</div>
+                        </div>
+                    `,
+              )
+              .join("");
+            resultsContainer.classList.add("active");
+          } else {
+            resultsContainer.classList.remove("active");
+          }
+        });
+    });
+
+    function selectItem(index, itemId) {
+      fetch(`/sales/get-item/${itemId}/`)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            addToCart(data.item);
+            searchInput.value = "";
+            resultsContainer.classList.remove("active");
+          }
+        });
+    }
+
+    function addToCart(item) {
+      const existingItem = cart.find((i) => i.id === item.id);
+      if (existingItem) {
+        if (existingItem.quantity < item.current_stock) {
+          existingItem.quantity += 1;
+        } else {
+          alert(`Maximum stock reached for ${item.name}`);
+        }
+      } else {
+        if (item.current_stock > 0) {
+          cart.push({
+            id: item.id,
+            name: item.name,
+            price: item.selling_price,
+            quantity: 1,
+            maxStock: item.current_stock,
+          });
+        } else {
+          alert(`${item.name} is out of stock`);
+        }
+      }
+      renderCart();
+    }
+
+    function updateQuantity(index, change) {
+      const item = cart[index];
+      const newQty = item.quantity + change;
+
+      if (newQty <= 0) {
+        cart.splice(index, 1);
+      } else if (newQty <= item.maxStock) {
+        item.quantity = newQty;
+      } else {
+        alert(`Maximum stock reached for ${item.name}`);
+      }
+      renderCart();
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      renderCart();
+    }
+
+    function clearCart() {
+      if (cart.length === 0) return;
+      if (confirm("Clear all items from cart?")) {
+        cart = [];
+        renderCart();
+      }
+    }
+
+    function renderCart() {
+      const container = document.getElementById("cartItems");
+
+      if (cart.length === 0) {
+        container.innerHTML = `
+                <div class="empty-cart">
+                    <p>Cart is empty</p>
+                    <p>Add items from the search above</p>
+                </div>
+            `;
+        document.getElementById("cartTotal").textContent =
+          "{{ CURRENCY_SYMBOL }} 0.00";
+        document.getElementById("checkoutBtn").disabled = true;
+        return;
+      }
+
+      container.innerHTML = cart
+        .map(
+          (item, index) => `
+            <div class="cart-item">
+                <div class="cart-item-info">
+                    <div class="cart-item-name">${item.name}</div>
+                    <div class="cart-item-price">{{ CURRENCY_SYMBOL }} ${item.price.toFixed(2)} each</div>
+                </div>
+                <div class="cart-item-qty">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(${index}, -1)">-</button>
+                    <span>${item.quantity}</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(${index}, 1)">+</button>
+                </div>
+                <div style="margin-left: 15px; text-align: right;">
+                    <div>{{ CURRENCY_SYMBOL }} ${(item.price * item.quantity).toFixed(2)}</div>
+                    <button type="button" class="cart-item-remove" onclick="removeFromCart(${index})">&times;</button>
+                </div>
+            </div>
+        `,
+        )
+        .join("");
+
+      const total = cart.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0,
+      );
+      document.getElementById("cartTotal").textContent =
+        "{{ CURRENCY_SYMBOL }} " + total.toFixed(2);
+      document.getElementById("checkoutBtn").disabled = false;
+    }
+
+    document
+      .getElementById("amountPaid")
+      .addEventListener("input", function () {
+        const total = cart.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0,
+        );
+        const paid = parseFloat(this.value) || 0;
+        const change = paid - total;
+
+        const changeDisplay = document.getElementById("changeDisplay");
+        if (paid > 0) {
+          changeDisplay.style.display = "block";
+          if (change >= 0) {
+            changeDisplay.className = "change-display positive";
+            changeDisplay.textContent =
+              "Change: {{ CURRENCY_SYMBOL }} " + change.toFixed(2);
+          } else {
+            changeDisplay.className = "change-display negative";
+            changeDisplay.textContent =
+              "Short: {{ CURRENCY_SYMBOL }} " + Math.abs(change).toFixed(2);
+          }
+        } else {
+          changeDisplay.style.display = "none";
+        }
+      });
+
+    function processCheckout() {
+      const total = cart.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0,
+      );
+      const amountPaid = parseFloat(
+        document.getElementById("amountPaid").value,
+      );
+
+      if (!amountPaid || amountPaid < total) {
+        alert("Amount paid is insufficient. Please enter the correct amount.");
+        return;
+      }
+
+      const checkoutBtn = document.getElementById("checkoutBtn");
+      checkoutBtn.disabled = true;
+      checkoutBtn.textContent = "Processing...";
+
+      fetch('{% url "sales:checkout" %}', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-CSRFToken": "{{ csrf_token }}",
+        },
+        body: new URLSearchParams({
+          cart_data: JSON.stringify(cart),
+          amount_paid: amountPaid,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            window.location.href =
+              "/sales/sale-complete/" + data.transaction_id + "/";
+          } else {
+            alert("Error: " + data.error);
+            checkoutBtn.disabled = false;
+            checkoutBtn.textContent = "Checkout";
+          }
+        })
+        .catch((error) => {
+          alert("Error processing checkout. Please try again.");
+          checkoutBtn.disabled = false;
+          checkoutBtn.textContent = "Checkout";
+        });
+    }
+
+    document.addEventListener("click", function (e) {
+      if (!e.target.closest(".search-container")) {
+        resultsContainer.classList.remove("active");
+      }
+    });
+  </script>
+  {% endblock %}
+</html>

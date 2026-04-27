@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block title %}Manager Dashboard - Luanda Feeds Centre{% endblock %}
+
+{% block content %}
+<div class="action-buttons">
+    <a href="{% url 'reports:sales_report' %}" class="btn">Generate Sales Report</a>
+    <a href="{% url 'inventory:inventory_list' %}" class="btn btn-outline">Manage Inventory</a>
+    {% if user.can_manage_users %}
+    <a href="{% url 'users:manage_passwords' %}" class="btn btn-outline">Manage Users</a>
+    {% endif %}
+</div>
+
+<div class="stat-cards">
+    <div class="stat-card">
+        <h3>Today's Transactions</h3>
+        <div class="value">{{ today_transactions }}</div>
+    </div>
+    <div class="stat-card">
+        <h3>Today's Revenue</h3>
+        <div class="value">{{ CURRENCY_SYMBOL }} {{ today_revenue|floatformat:0 }}</div>
+    </div>
+    <div class="stat-card">
+        <h3>Low Stock Items</h3>
+        <div class="value" style="color: {% if low_stock_count > 0 %}#ff4444{% else %}#28a745{% endif %}">
+            {{ low_stock_count }}
+        </div>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <h2 class="card-title">Low Stock Alert</h2>
+        {% if low_stock_items %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Current Stock</th>
+                    <th>Threshold</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in low_stock_items %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td style="color: #ff4444;">{{ item.current_stock|floatformat:2 }}</td>
+                    <td>{{ item.low_stock_threshold|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <p>All items are sufficiently stocked!</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <h2 class="card-title">Top Selling Items (This Week)</h2>
+        {% if top_selling %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity Sold</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in top_selling %}
+                <tr>
+                    <td>{{ item.item__name }}</td>
+                    <td>{{ item.total_qty|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <p>No sales data for this week.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card">
+    <h2 class="card-title">Recent Stock Movements</h2>
+    {% if recent_movements %}
+    <table>
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Item</th>
+                <th>Change</th>
+                <th>Reason</th>
+                <th>User</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for movement in recent_movements %}
+            <tr>
+                <td>{{ movement.timestamp|date:"M d, H:i" }}</td>
+                <td>{{ movement.item.name }}</td>
+                <td style="color: {% if movement.quantity_change > 0 %}#28a745{% else %}#ff4444{% endif %}">
+                    {{ movement.quantity_change|floatformat:2 }}
+                </td>
+                <td>{{ movement.reason }}</td>
+                <td>{{ movement.performed_by.get_full_name|default:movement.performed_by.username }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <p>No recent stock movements.</p>
+    </div>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h2 class="card-title">Recent Price Changes</h2>
+    {% if recent_price_changes %}
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Item</th>
+                <th>Price Type</th>
+                <th>Old Price</th>
+                <th>New Price</th>
+                <th>Changed By</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for change in recent_price_changes %}
+            <tr>
+                <td>{{ change.timestamp|date:"M d, H:i" }}</td>
+                <td>{{ change.item.name }}</td>
+                <td>{{ change.get_price_type_display }}</td>
+                <td>{{ CURRENCY_SYMBOL }} {{ change.old_price|floatformat:2 }}</td>
+                <td>{{ CURRENCY_SYMBOL }} {{ change.new_price|floatformat:2 }}</td>
+                <td>{{ change.changed_by.get_full_name|default:change.changed_by.username }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div style="margin-top: 20px;">
+        <a href="{% url 'inventory:price_history' %}" class="btn btn-outline btn-sm">View Full History</a>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No recent price changes.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
