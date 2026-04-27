@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Inventory - Luanda Feeds Centre{% endblock %}
+
+{% block content %}
+<div class="action-buttons">
+    <a href="{% url 'inventory:add_item' %}" class="btn">Add New Item</a>
+    <a href="{% url 'inventory:adjust_stock' %}" class="btn btn-outline">Adjust Stock</a>
+</div>
+
+<div class="card">
+    <h2 class="card-title">Inventory</h2>
+
+    <div class="search-bar">
+        <form method="get" style="display: flex; gap: 10px; width: 100%;">
+            <input type="text" name="search" placeholder="Search by item name..." value="{{ search_query }}">
+            <select name="category" class="form-control" style="width: 200px;">
+                <option value="">All Categories</option>
+                {% for cat in categories %}
+                <option value="{{ cat }}" {% if category_filter == cat %}selected{% endif %}>{{ cat }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn">Search</button>
+        </form>
+    </div>
+
+    {% if items %}
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Buying Price</th>
+                <th>Selling Price</th>
+                <th>Current Stock</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr class="{% if item.id in low_stock_items %}low-stock-row{% endif %}">
+                <td>{{ item.name }}</td>
+                <td>{{ item.category|default:"-" }}</td>
+                <td>{{ CURRENCY_SYMBOL }} {{ item.buying_price|floatformat:2 }}</td>
+                <td>{{ CURRENCY_SYMBOL }} {{ item.selling_price|floatformat:2 }}</td>
+                <td>{{ item.current_stock|floatformat:2 }}</td>
+                <td>
+                    <span class="status-badge status-{% if item.is_low_stock %}low{% else %}ok{% endif %}">
+                        {{ item.status }}
+                    </span>
+                </td>
+                <td>
+                    <a href="{% url 'inventory:edit_item' item.id %}" class="btn btn-sm">Edit</a>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="deleteItem({{ item.id }}, '{{ item.name|escapejs }}')">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <p>No items found in inventory.</p>
+        <a href="{% url 'inventory:add_item' %}" class="btn">Add First Item</a>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function deleteItem(itemId, itemName) {
+    if (confirm(`Are you sure you want to delete "${itemName}"? This action cannot be undone.`)) {
+        fetch(`/inventory/delete/${itemId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert('Error: ' + (data.error || 'Could not delete item'));
+            }
+        });
+    }
+}
+</script>
+{% endblock %}

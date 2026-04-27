@@ -1,0 +1,9 @@
+# Luanda Feeds Centre - Agrovet Automation Software
+
+Django==4.2.16
+waitress==2.1.2
+whitenoise==6.6.0
+reportlab==4.0.9
+openpyxl==3.1.2
+pywin32==306; platform_system == "Windows"
+PyInstaller==6.5.0; platform_system == "Windows"

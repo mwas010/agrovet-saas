@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Price Change History - Luanda Feeds Centre{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-title">Price Change History</h2>
+
+    {% if changes %}
+    <table>
+        <thead>
+            <tr>
+                <th>Date & Time</th>
+                <th>Item</th>
+                <th>Price Type</th>
+                <th>Old Price</th>
+                <th>New Price</th>
+                <th>Changed By</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for change in changes %}
+            <tr>
+                <td>{{ change.timestamp|date:"M d, Y H:i" }}</td>
+                <td>{{ change.item.name }}</td>
+                <td>{{ change.get_price_type_display }}</td>
+                <td>{{ CURRENCY_SYMBOL }} {{ change.old_price|floatformat:2 }}</td>
+                <td>{{ CURRENCY_SYMBOL }} {{ change.new_price|floatformat:2 }}</td>
+                <td>{{ change.changed_by.get_full_name|default:change.changed_by.username }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if total_pages > 1 %}
+    <div class="pagination">
+        {% if page > 1 %}
+        <a href="?page={{ page|add:-1 }}">&laquo; Previous</a>
+        {% endif %}
+        <span>Page {{ page }} of {{ total_pages }}</span>
+        {% if page < total_pages %}
+        <a href="?page={{ page|add:1 }}">Next &raquo;</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="empty-state">
+        <p>No price changes recorded yet.</p>
+    </div>
+    {% endif %}
+
+    <div style="margin-top: 20px;">
+        <a href="{% url 'inventory:manager_dashboard' %}" class="btn btn-outline">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}
