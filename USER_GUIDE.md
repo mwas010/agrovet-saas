@@ -153,6 +153,4 @@ After generating a report, you can export it:
 - You may not have the right role
 - Contact your manager for access
 
-## Need Help?
 
-Contact the system administrator or IT support for assistance.

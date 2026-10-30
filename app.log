@@ -1,3 +1,62 @@
 2026-04-27 19:02:31,518 - INFO - ==================================================
 2026-04-27 19:02:31,518 - INFO - Luanda Feeds Centre - Agrovet Automation Starting
 2026-04-27 19:02:31,518 - INFO - ==================================================
+2026-09-15 09:37:30,903 - INFO - ==================================================
+2026-09-15 09:37:30,903 - INFO - Luanda Feeds Centre - Agrovet Automation Starting
+2026-09-15 09:37:30,903 - INFO - ==================================================
+2026-09-15 09:37:31,009 - INFO - Found Edge at C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe
+2026-09-15 09:37:31,408 - INFO - Starting server on port 8000
+2026-09-15 09:37:31,412 - INFO - Serving on http://127.0.0.1:8000
+2026-09-15 09:37:32,409 - INFO - Launching Edge
+2026-09-15 09:37:33,877 - WARNING - Not Found: /favicon.ico
+2026-09-15 09:45:03,837 - WARNING - Not Found: /favicon.ico
+2026-09-15 09:45:30,535 - WARNING - Not Found: /favicon.ico
+2026-09-15 09:45:39,163 - WARNING - Not Found: /sdmin
+2026-09-15 09:45:47,522 - WARNING - Task queue depth is 1
+2026-09-15 09:45:47,523 - WARNING - Task queue depth is 2
+2026-09-15 09:45:47,527 - WARNING - Task queue depth is 2
+2026-09-15 09:46:00,334 - WARNING - Task queue depth is 1
+2026-09-15 09:56:51,090 - WARNING - Task queue depth is 1
+2026-09-15 09:56:51,091 - WARNING - Task queue depth is 2
+2026-09-15 09:56:51,092 - WARNING - Task queue depth is 3
+2026-09-15 09:56:51,102 - WARNING - Task queue depth is 2
+2026-09-15 09:56:51,114 - WARNING - Task queue depth is 2
+2026-09-15 09:56:51,125 - WARNING - Task queue depth is 2
+2026-09-15 09:56:51,127 - WARNING - Task queue depth is 2
+2026-09-15 09:56:51,132 - WARNING - Task queue depth is 2
+2026-09-15 09:56:51,141 - WARNING - Task queue depth is 2
+2026-09-15 09:57:09,272 - WARNING - Task queue depth is 1
+2026-09-15 09:57:09,273 - WARNING - Task queue depth is 2
+2026-09-15 09:57:24,361 - WARNING - Task queue depth is 1
+2026-09-15 09:57:24,363 - WARNING - Task queue depth is 2
+2026-09-15 09:57:24,367 - WARNING - Task queue depth is 1
+2026-09-15 09:57:24,369 - WARNING - Task queue depth is 2
+2026-09-15 09:57:24,370 - WARNING - Task queue depth is 2
+2026-09-15 09:57:24,373 - WARNING - Task queue depth is 1
+2026-09-15 09:57:24,373 - WARNING - Task queue depth is 2
+2026-09-15 09:57:24,375 - WARNING - Task queue depth is 2
+2026-09-15 09:57:36,056 - WARNING - Task queue depth is 1
+2026-09-15 09:57:36,057 - WARNING - Task queue depth is 2
+2026-09-15 09:57:36,067 - WARNING - Task queue depth is 1
+2026-09-15 09:57:36,068 - WARNING - Task queue depth is 2
+2026-09-15 09:57:39,244 - WARNING - Task queue depth is 1
+2026-09-15 09:57:39,247 - WARNING - Task queue depth is 1
+2026-09-15 09:57:39,249 - WARNING - Task queue depth is 1
+2026-09-15 09:57:39,251 - WARNING - Task queue depth is 1
+2026-09-15 09:58:01,491 - WARNING - Task queue depth is 1
+2026-09-15 09:58:01,493 - WARNING - Task queue depth is 1
+2026-09-15 09:58:25,033 - WARNING - Task queue depth is 1
+2026-09-15 10:02:08,764 - WARNING - Forbidden (CSRF token from POST incorrect.): /users/login/
+2026-09-15 10:02:21,474 - WARNING - Forbidden (CSRF token from POST incorrect.): /users/login/
+2026-10-30 09:38:30,960 - INFO - ==================================================
+2026-10-30 09:38:30,961 - INFO - Luanda Feeds Centre - Agrovet Automation Starting
+2026-10-30 09:38:30,961 - INFO - ==================================================
+2026-10-30 09:38:31,181 - INFO - Found Edge at C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe
+2026-10-30 09:38:33,099 - INFO - Starting server on port 8000
+2026-10-30 09:38:33,311 - INFO - Serving on http://127.0.0.1:8000
+2026-10-30 09:38:34,102 - INFO - Launching Edge
+2026-10-30 09:38:37,797 - WARNING - Not Found: /favicon.ico
+2026-10-30 09:46:54,929 - INFO - Browser closed, shutting down
+2026-10-30 09:46:54,930 - INFO - Cleaning up resources...
+2026-10-30 09:46:55,225 - INFO - Cleanup complete
+2026-10-30 09:46:55,225 - INFO - Application closed

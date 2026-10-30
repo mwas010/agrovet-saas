@@ -1,0 +1,22 @@
+2026-09-15 06:37:33.021: [INFO] CurrentProfilePath: c:\Users\Administrator\Downloads\luanda_feeds\browser_profile\Default
+2026-09-15 06:37:33.021: [INFO] Profiles total count: 1
+2026-09-15 06:37:33.022: [INFO] Profile: name=Profile 1 path=c:\Users\Administrator\Downloads\luanda_feeds\browser_profile\Default lastActive=2026-09-15T06:37:32.998Z
+2026-09-15 06:37:33.022: [INFO] LastUsedProfileDir: c:\Users\Administrator\Downloads\luanda_feeds\browser_profile\Default
+2026-09-15 06:37:33.022: [INFO] MostRecentlyActiveProfile: name=Profile 1 path=c:\Users\Administrator\Downloads\luanda_feeds\browser_profile\Default lastActive=2026-09-15T06:37:32.998Z
+2026-09-15 06:37:33.022: [INFO] OnDoneLoading sync enabled: 0
+2026-09-15 06:37:33.022: [INFO] BookmarkModelLoaded, ids_reassigned: 0
+2026-09-15 06:37:33.022: [INFO] BookmarksLoadDropped droppedNodes=0
+2026-09-15 06:37:33.022: [INFO] BookmarksSnapshot Startup total=0 bar=0 other=0 mobile=0 showBar=0 showBarNTP=1
+2026-09-15 06:37:33.088: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 0
+2026-09-15 06:43:41.467: [INFO] BookmarksSnapshot Shutdown total=0 bar=0 other=0 mobile=0 showBar=0 showBarNTP=1
+2026-10-30 06:38:35.651: [INFO] CurrentProfilePath: C:\Users\Administrator\Downloads\luanda_feeds\browser_profile\Default
+2026-10-30 06:38:35.651: [INFO] Profiles total count: 1
+2026-10-30 06:38:35.651: [INFO] Profile: name=Profile 1 path=C:\Users\Administrator\Downloads\luanda_feeds\browser_profile\Default lastActive=2026-10-30T06:38:35.593Z
+2026-10-30 06:38:35.651: [INFO] LastUsedProfileDir: C:\Users\Administrator\Downloads\luanda_feeds\browser_profile\Default
+2026-10-30 06:38:35.651: [INFO] MostRecentlyActiveProfile: name=Profile 1 path=C:\Users\Administrator\Downloads\luanda_feeds\browser_profile\Default lastActive=2026-10-30T06:38:35.593Z
+2026-10-30 06:38:35.651: [INFO] OnDoneLoading sync enabled: 0
+2026-10-30 06:38:35.651: [INFO] BookmarkModelLoaded, ids_reassigned: 0
+2026-10-30 06:38:35.651: [INFO] BookmarksLoadDropped droppedNodes=0
+2026-10-30 06:38:35.651: [INFO] BookmarksSnapshot Startup total=0 bar=0 other=0 mobile=0 showBar=0 showBarNTP=1
+2026-10-30 06:38:35.661: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 0
+2026-10-30 06:46:54.857: [INFO] BookmarksSnapshot Shutdown total=0 bar=0 other=0 mobile=0 showBar=0 showBarNTP=1
